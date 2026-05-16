@@ -6,6 +6,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    mywebapp.url = "path:./mywebapp";
   };
 
   outputs =
@@ -13,16 +14,19 @@
       self,
       nixpkgs,
       flake-utils,
+      mywebapp,
     }:
     let
-      # NOTE: switch to x86_64-linux if you're on x86; i'm not gonna bother cross-compiling
       guestSystem = "aarch64-linux";
 
       nixosConfig = nixpkgs.lib.nixosSystem {
         system = guestSystem;
         modules = [
           ./nixos/configuration.nix
-          ./nixos/vm-interactive.nix
+          ./nixos/vm.nix
+          {
+            _module.args.mywebapp = mywebapp.packages.${guestSystem}.default;
+          }
         ];
       };
     in
@@ -36,6 +40,7 @@
           packages = with pkgs; [
             qemu
             e2fsprogs
+            just
           ];
         };
 

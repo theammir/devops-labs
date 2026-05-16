@@ -19,16 +19,16 @@
     extraGroups = [ "wheel" ];
     initialPassword = "123123";
   };
-  users.users.app = {
-    # TODO: whatever app owns to run itself
-    isNormalUser = true;
-    initialPassword = "123123";
-  };
   users.users.operator = {
     # TODO: minimal permissions to operate the app
     isNormalUser = true;
     initialPassword = "123123";
   };
+
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   system.stateVersion = "25.11";
 }

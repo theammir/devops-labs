@@ -11,6 +11,12 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.49",
     "uvicorn[standard]>=0.47.0",
 ]
+    
+[dependency-groups]
+dev = [
+    "ruff>=0.15.13",
+    "ty>=0.0.37",
+]
 
 [project.scripts]
 mywebapp = "mywebapp.cli:main"
@@ -32,9 +38,3 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 [tool.ty.src]
 include = ["src", "alembic"]
 
-
-[dependency-groups]
-dev = [
-    "ruff>=0.15.13",
-    "ty>=0.0.37",
-]
