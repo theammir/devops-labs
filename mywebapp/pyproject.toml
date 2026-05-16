@@ -1,0 +1,40 @@
+[project]
+name = "mywebapp"
+version = "0.1.0"
+description = "Task Tracker service"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "fastapi>=0.136.1",
+    "pydantic>=2.13.4",
+    "sqlalchemy[asyncio]>=2.0.49",
+    "uvicorn[standard]>=0.47.0",
+]
+
+[project.scripts]
+mywebapp = "mywebapp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mywebapp"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ty.src]
+include = ["src", "alembic"]
+
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.13",
+    "ty>=0.0.37",
+]
