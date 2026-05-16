@@ -1,14 +1,21 @@
-{ ... }:
+{ modulesPath, ... }:
 {
+  imports = [
+    (modulesPath + "/virtualisation/qemu-vm.nix")
+  ];
+
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "yes";
   };
 
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
+
   users.users.root.initialPassword = "root";
 
   virtualisation.qemu.options = [
-    "-accel hvf"
+    "-accel tcg"
     "-cpu host"
   ];
   virtualisation.forwardPorts = [
