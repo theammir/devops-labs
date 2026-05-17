@@ -1,5 +1,11 @@
 { ... }:
 {
+  imports = [
+    ./mywebapp.nix
+    ./postgresql.nix
+    ./nginx.nix
+  ];
+
   fileSystems."/" = {
     device = "/dev/vda";
     fsType = "ext4";
@@ -27,7 +33,6 @@
 
   networking.firewall.allowedTCPPorts = [
     80
-    443
   ];
 
   system.stateVersion = "25.11";

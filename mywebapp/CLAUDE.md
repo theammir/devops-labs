@@ -29,10 +29,12 @@ pyproject.toml          # deps managed by `uv add`
 ## Constitution
 
 ### Dependencies
+
 - **Add deps via `uv add <pkg>`** (or `uv add --dev <pkg>`). Never hand-edit the `dependencies` array in `pyproject.toml`. `uv add` pins to latest resolved version and updates `uv.lock`.
 - Only project metadata (`name`, `version`, `[project.scripts]`, `[build-system]`, `[tool.*]`) is hand-edited.
 
 ### Migrations
+
 - **Models are the source of truth.** Edit `src/mywebapp/models.py`, then autogenerate:
   ```
   MYWEBAPP_CONFIG=config.example.toml uv run alembic revision --autogenerate -m "<message>"
@@ -42,28 +44,33 @@ pyproject.toml          # deps managed by `uv add`
 - The migration script must accept either an empty DB or a previous-version DB created by an earlier migration. Don't bypass alembic.
 
 ### API contract
+
 - Business endpoints (`/tasks*`) honor `Accept`. First explicit `text/html` or `application/json` wins; empty / `*/*` → JSON.
 - Root `/` accepts and returns **only** `text/html`. Non-HTML accept → 406.
 - All response bodies derived from Pydantic DTOs in `schemas.py`. No ad-hoc dicts. HTML rendering reads from the same DTO.
 - HTML pages: plain HTML, no JS, no CSS. Lists rendered in `<table>`.
 
 ### Type hints
+
 - Modern only: `list[X]`, `dict[K, V]`, `X | None`. No `typing.List`, `Optional`, `Union`. No `from __future__ import annotations` (3.14 supplies built-in generics + PEP 604 unions natively).
 - DTOs are Pydantic models with explicit field types.
 
 ### Lint + types
+
 - Format: `uv run ruff format .`
 - Lint: `uv run ruff check .` (autofix: `--fix`)
 - Type check: `uv run ty check`
 - Both must pass before commit. Ruff selects `E,F,I,UP,B,SIM,RUF`. `ty` scope: `src`, `alembic`.
 
 ### Config
+
 - Single TOML file passed as positional CLI arg: `mywebapp /path/to/config.toml`.
 - Sections: `[server]` (host, port), `[database]` (url, asyncpg DSN).
 - Port lives in config, not code. Default example: 8080.
 - Alembic reads the same TOML via `MYWEBAPP_CONFIG` env var or `-x config=<path>`.
 
 ### Health
+
 - `GET /health/alive` → always `200 OK` plain text.
 - `GET /health/ready` → `200 OK` if a `SELECT 1` against the configured DB succeeds, else `500` with a short description of the failure.
 
@@ -93,6 +100,7 @@ docker compose down
 ```
 
 ## Non-goals
+
 - No Docker / Compose for the app itself. Compose is local-postgres only.
 - No JS, no CSS, no templating engine. Plain HTML strings.
 - No ORM cleverness beyond `Mapped[...]` declarative columns.
