@@ -4,8 +4,6 @@
     (modulesPath + "/virtualisation/qemu-vm.nix")
   ];
 
-  services.openssh.enable = true;
-
   virtualisation = {
     qemu.options = [
       "-machine virt,gic-version=max,accel=hvf"
@@ -27,9 +25,4 @@
     cores = 1;
     graphics = false;
   };
-
-  networking.firewall.allowedTCPPorts = [
-    80
-    22
-  ];
 }

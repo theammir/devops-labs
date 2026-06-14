@@ -21,7 +21,9 @@
       after = [
         "network.target"
         "postgresql.service"
+        "mywebapp-db-grants.service"
       ];
+      requires = [ "mywebapp-db-grants.service" ];
 
       environment = {
         MYWEBAPP_CONFIG = "/etc/mywebapp/config.toml";
