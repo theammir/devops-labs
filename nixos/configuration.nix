@@ -18,22 +18,22 @@
   users.users.student = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    initialPassword = "123123";
+    initialPassword = "12345678";
   };
   users.users.teacher = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    initialPassword = "123123";
+    initialPassword = "12345678";
   };
   users.users.operator = {
     # TODO: minimal permissions to operate the app
     isNormalUser = true;
-    initialPassword = "123123";
+    initialPassword = "12345678";
   };
 
   networking.firewall.allowedTCPPorts = [
     80
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
