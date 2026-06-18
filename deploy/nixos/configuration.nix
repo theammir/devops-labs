@@ -24,8 +24,17 @@
     (lib.mkIf pkgs.stdenv.isx86_64 {
       grub.enable = true;
       grub.device = "/dev/vda";
+      grub.extraConfig = ''
+        serial --unit=0 --speed=115200
+        terminal_input serial console
+        terminal_output serial console
+      '';
     })
   ];
+
+  # x86_64 BIOS guest has no useful VGA in our headless qemu setup; route the
+  # kernel console to the same serial port GRUB uses.
+  boot.kernelParams = lib.mkIf pkgs.stdenv.isx86_64 [ "console=ttyS0,115200n8" ];
 
   boot.initrd.availableKernelModules = [
     "virtio_blk"

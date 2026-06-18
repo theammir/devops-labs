@@ -104,17 +104,44 @@ set prompt {\][#$]}
 if {[info exists env(DEBUG)] && $env(DEBUG) ne "0"} { log_user 1 } else { log_user 0 }
 spawn {*}$argv
 
-# Wait for the installer shell. The minimal ISO autologins (as root or nixos);
-# if it instead shows a login: prompt, log in as root (no password).
+# On x86_64, the default GRUB entry boots with console=tty1, so we never see
+# the kernel/shell on serial. The ISO has a serial-console entry under
+# "Options". From the default ("Linux LTS"): down 2 -> Options, Enter, then
+# down 7 -> "...serial console=ttyS0,115200n8", Enter.
+if {[lindex $argv 0] eq "qemu-system-x86_64"} {
+  set down "\033\[B"
+  expect -re {NixOS.*Installer}
+  sleep 1
+  send "${down}"; sleep 0.3
+  send "${down}"; sleep 0.3
+  send "\r";      sleep 1.5
+  for {set i 0} {$i < 7} {incr i} { send "${down}"; sleep 0.3 }
+  send "\r"; sleep 0.5
+  send "\r"
+}
+
+# Wait for the installer shell. The minimal ISO autologins as `nixos`, so we
+# don't need to drive a login prompt — matching `login:` early would race the
+# autologin and leave stray input ("root\n") in the tty buffer that bash later
+# executes as a command.
 set timeout 600
 puts "\[setup\] waiting for installer shell..."
 expect {
-  -re {login: *$}       { send "root\r"; exp_continue }
-  -re {[Pp]assword: *$} { send "\r"; exp_continue }
   -re $prompt {}
   timeout { puts stderr "\[setup\] timed out waiting for shell (retry with DEBUG=1 to see the console)"; exit 1 }
   eof     { puts stderr "\[setup\] qemu exited before shell"; exit 1 }
 }
+# Drain any trailing autologin output (motd, last-login, second prompt redraw)
+# before we start sending commands, so they don't queue ahead of bash being
+# ready to read them.
+sleep 2
+set timeout 2
+expect {
+  -re $prompt { exp_continue }
+  timeout {}
+}
+set timeout 600
+
 
 # Run a command in the guest, echoing it, and wait for the next prompt.
 proc run {cmd} {
