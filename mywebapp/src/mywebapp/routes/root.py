@@ -11,6 +11,8 @@ ENDPOINTS: list[EndpointInfo] = [
     EndpointInfo(method="GET", path="/tasks", description="list all tasks"),
     EndpointInfo(method="POST", path="/tasks", description="create a new task"),
     EndpointInfo(method="POST", path="/tasks/{id}/done", description="mark task as done"),
+    EndpointInfo(method="GET", path="/health/alive", description="service alive"),
+    EndpointInfo(method="GET", path="/health/ready", description="service ready"),
 ]
 
 

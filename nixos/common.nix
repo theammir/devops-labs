@@ -18,6 +18,10 @@
 
   users.users.root.hashedPassword = "!";
 
+  systemd.tmpfiles.rules = [
+    "f /home/student/gradebook 0644 student users - 25"
+  ];
+
   security.sudo.wheelNeedsPassword = false;
 
   services.openssh = {

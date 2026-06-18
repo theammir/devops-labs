@@ -34,6 +34,7 @@
         packages = with hostPkgs; [
           qemu
           just
+          expect
         ];
       };
 

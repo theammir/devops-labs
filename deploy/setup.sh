@@ -92,7 +92,7 @@ export DEBUG="${DEBUG:-0}"
                  || echo "Driving install (DEBUG: showing VM console)..."
 
 DRIVER="$(mktemp -t setup-vm-XXXXXX.exp)"
-trap 'rm -f "$DRIVER"' EXIT
+trap 'rm -f "$DRIVER"; printf "\033(B\033[m"; stty sane 2>/dev/null || true' EXIT
 cat >"$DRIVER" <<'EXP'
 # argv = qemu binary + its args (passed by setup.sh)
 # Match any NixOS shell prompt tail: "...]#" (root) or "...]$" (user). No
